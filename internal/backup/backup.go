@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -38,9 +39,11 @@ func Run(ctx context.Context, folder, bucket, gpgRecipient string) error {
 		return fmt.Errorf("rewind backup file: %w", err)
 	}
 
+	datePath := time.Now().Format("2003/01/02")
+	
 	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(bucket),
-		Key:    aws.String("backup.tar.gz.gpg"),
+		Key:    aws.String(datePath + "/backup.tar.gz.gpg"),
 		Body:   tmpFile,
 	})
 
